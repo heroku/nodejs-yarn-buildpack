@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+rm -rf node_modules
+npm -g install yarn
+yarn install
+
+# if yarn build, then build
+# if yarn heroku-build, then heroku-build
