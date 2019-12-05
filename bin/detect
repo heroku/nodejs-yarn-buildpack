@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
-if [[ ! -f yarn.lock ]]; then
+set -eo pipefail
+
+bp_dir=$(cd "$(dirname "$0")"/..; pwd)
+build_dir=$(pwd)
+
+# shellcheck source=/dev/null
+source "$bp_dir/lib/detect.sh"
+
+if ! detect_yarn_lock "$build_dir" ; then
   exit 100
 fi
