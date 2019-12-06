@@ -6,6 +6,8 @@ set -e
 bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
 # shellcheck source=/dev/null
+source "$bp_dir/lib/utils/env.sh"
+# shellcheck source=/dev/null
 source "$bp_dir/lib/utils/json.sh"
 # shellcheck source=/dev/null
 source "$bp_dir/lib/detect.sh"
@@ -23,7 +25,6 @@ run_prebuild() {
 
 install_modules() {
   local build_dir=$1
-  local layer_dir=$2
 
   if detect_yarn_lock "$build_dir" ; then
     echo "---> Installing node modules from ./yarn.lock"
@@ -42,13 +43,13 @@ install_or_reuse_node_modules() {
 
   touch "$layer_dir.toml"
   mkdir -p "${layer_dir}"
+  cp -r "$layer_dir" "$build_dir/node_modules"
 
   local_lock_checksum=$(sha256sum "$build_dir/yarn.lock" | cut -d " " -f 1)
   cached_lock_checksum=$(yj -t < "${layer_dir}.toml" | jq -r ".metadata.yarn_lock_checksum")
 
   if [[ "$local_lock_checksum" == "$cached_lock_checksum" ]] ; then
-      echo "---> Reusing node modules"
-      cp -r "$layer_dir" "$build_dir/node_modules"
+    echo "---> Reusing node modules"
   else
     echo "cache = true" > "${layer_dir}.toml"
 
@@ -58,7 +59,7 @@ install_or_reuse_node_modules() {
       echo -e "[metadata]\nyarn_lock_checksum = \"$local_lock_checksum\""
     } >> "${layer_dir}.toml"
 
-    install_modules "$build_dir" "$layer_dir"
+    install_modules "$build_dir"
 
     if [[ -d "$build_dir/node_modules" && -n "$(ls -A "$build_dir/node_modules")" ]] ; then
       cp -r "$build_dir/node_modules/." "$layer_dir"
