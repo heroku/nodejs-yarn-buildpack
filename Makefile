@@ -10,6 +10,10 @@ VERSION := "v$$(cat buildpack.toml | grep version | sed -e 's/version = //g' | x
 
 test:
 	make shellcheck
+	make unit-test
+
+unit-test:
+	shpec ./shpec/*_shpec.sh
 
 clean:
 	-rm -f nodejs-yarn-buildpack-$(VERSION).tgz

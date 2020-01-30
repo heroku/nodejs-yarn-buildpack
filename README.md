@@ -20,6 +20,15 @@ brew install pack
 
 If you're using Windows or Linux, follow instructions [here](https://buildpacks.io/docs/install-pack/).
 
+### Install shpec
+
+This buildpack uses `shpec` for unit tests, so to run them locally, you'll need to install the package.
+
+```sh
+curl -sLo- http://get.bpkg.sh | bash
+bpkg install rylnd/shpec
+```
+
 ### Clone the buildpack
 
 Right now, we are prototyping with a local version of the buildpack. Clone it to your machine.
