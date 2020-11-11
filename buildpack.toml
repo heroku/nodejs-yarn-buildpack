@@ -7,3 +7,9 @@ name = "Yarn Buildpack"
 
 [[stacks]]
 id = "heroku-18"
+
+[[stacks]]
+id = "heroku-20"
+
+[[stacks]]
+id = "io.buildpacks.stacks.bionic"
