@@ -1,8 +1,8 @@
 api = "0.2"
 
 [buildpack]
-id = "heroku/nodejs-yarn"
-version = "0.1.0"
+id = "fagiani/nodejs-yarn"
+version = "0.1.2"
 name = "Yarn Buildpack"
 
 [[stacks]]
