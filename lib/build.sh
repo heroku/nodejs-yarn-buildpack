@@ -19,7 +19,7 @@ run_prebuild() {
   heroku_prebuild_script=$(json_get_key "$build_dir/package.json" ".scripts[\"heroku-prebuild\"]")
 
   if [[ $heroku_prebuild_script ]] ; then
-    cd $build_dir
+    cd "$build_dir"
     yarn heroku-prebuild
     cd -
   fi
@@ -28,7 +28,7 @@ run_prebuild() {
 install_modules() {
   local build_dir=$1
 
-  cd $build_dir
+  cd "$build_dir"
   if detect_yarn_lock "$build_dir" ; then
     echo "---> Installing node modules from $build_dir/yarn.lock"
     yarn install
@@ -89,13 +89,13 @@ TOML
     mkdir -p "${layer_dir}"
     cp -r "$layer_dir" "$build_dir/$build_cache"
     echo "$build_dir/$build_cache"
-    ls -lsa $build_dir/$build_cache
+    ls -lsa "$build_dir/$build_cache"
   fi
 
   build_script=$(json_get_key "$build_dir/package.json" ".scripts.build")
   heroku_postbuild_script=$(json_get_key "$build_dir/package.json" ".scripts[\"heroku-postbuild\"]")
 
-  cd $build_dir
+  cd "$build_dir"
   if [[ $heroku_postbuild_script ]] ; then
     yarn heroku-postbuild
   elif [[ $build_script ]] ; then
@@ -104,8 +104,8 @@ TOML
   cd -
 
   echo "$build_dir/$build_cache"
-  ls -lsa $build_dir/$build_cache
-  ls -lsa $build_dir/resources/assets/build
+  ls -lsa "$build_dir/$build_cache"
+  ls -lsa "$build_dir/resources/assets/build"
 
   if [[ $build_cache && -d "$build_dir/$build_cache" && -n "$(ls -A "$build_dir/$build_cache")" ]] ; then
     cp -r "$build_dir/$build_cache/." "$layer_dir"
