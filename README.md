@@ -35,6 +35,16 @@ cd .. # change from nodejs-npm-buildpack directory
 git clone git@github.com:heroku/nodejs-engine-buildpack.git
 ```
 
+### Define a custom path for yarn (optional)
+
+You can optionally create a `yarn.lock` file in the root directory with a line like this:
+
+```
+# yarn_path:public/my-custom-path
+```
+
+Make sure you place the actual `package.json` and `yarn.lock` in that path
+
 ### Build the image
 
 #### with buildpacks

@@ -9,10 +9,14 @@ platform_dir=$2
 
 # shellcheck source=/dev/null
 source "$bp_dir/lib/build.sh"
+# shellcheck source=/dev/null
+source "$bp_dir/lib/utils/yarn.sh"
 rm -rf "$build_dir/node_modules"
+
+build_dir=$(extract_path_from_yarn_lock "$build_dir")
 
 export_env "$platform_dir/env" "" ""
 run_prebuild "$build_dir"
 install_or_reuse_node_modules "$build_dir" "$layers_dir/node_modules"
-run_build "$build_dir"
+run_build "$build_dir" "$layers_dir"
 write_launch_toml "$build_dir/package.json" "$layers_dir/launch.toml"
