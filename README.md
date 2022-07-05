@@ -9,30 +9,14 @@ This buildpack builds on top of the existing [Node.js Engine Cloud Native Buildp
 
 ## Usage
 
-### Install pack
+This buildpack is not meant to be used on its own, and instead should be in used in combination with other buildpacks.
 
-Using `brew` (assuming development is done on MacOS), install `pack`.
+Include a list of `apt` package names to be installed in a file named `Aptfile`; be aware that line ending should be LF, not CRLF.
 
-```sh
-brew tap buildpack/tap
-brew install pack
+The buildpack automatically downloads and installs the packages when you run a build:
+
 ```
-
-If you're using Windows or Linux, follow instructions [here](https://buildpacks.io/docs/install-pack/).
-
-### Clone the buildpack
-
-Right now, we are prototyping with a local version of the buildpack. Clone it to your machine.
-
-```sh
-git clone git@github.com:heroku/nodejs-yarn-buildpack.git
-```
-
-Clone the Heroku Node.js Engine Cloud Native Buildpack.
-
-```sh
-cd .. # change from nodejs-npm-buildpack directory
-git clone git@github.com:heroku/nodejs-engine-buildpack.git
+$ pack build --buildpack fagiani/nodejs-yarn myapp
 ```
 
 ### Define a custom path for yarn (optional)
