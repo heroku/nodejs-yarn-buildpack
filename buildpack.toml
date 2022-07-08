@@ -1,9 +1,15 @@
-api = "0.2"
+api = "0.4"
 
 [buildpack]
-id = "heroku/nodejs-yarn"
-version = "0.1.0"
+id = "fagiani/nodejs-yarn"
+version = "0.2.1"
 name = "Yarn Buildpack"
+homepage = "https://github.com/fagiani/nodejs-yarn-buildpack"
+description = "Runs Yarn after nodejs install"
+keywords = ["nodejs", "node", "yarn", "install", "javascript"]
+
+[[buildpack.licenses]]
+type = "MIT"
 
 [[stacks]]
 id = "heroku-18"

@@ -19,20 +19,24 @@ run_prebuild() {
   heroku_prebuild_script=$(json_get_key "$build_dir/package.json" ".scripts[\"heroku-prebuild\"]")
 
   if [[ $heroku_prebuild_script ]] ; then
+    cd "$build_dir"
     yarn heroku-prebuild
+    cd -
   fi
 }
 
 install_modules() {
   local build_dir=$1
 
+  cd "$build_dir"
   if detect_yarn_lock "$build_dir" ; then
-    echo "---> Installing node modules from ./yarn.lock"
+    echo "---> Installing node modules from $build_dir/yarn.lock"
     yarn install
   else
     echo "---> Installing node modules"
     yarn install --no-lockfile
   fi
+  cd -
 }
 
 install_or_reuse_node_modules() {
@@ -69,16 +73,38 @@ install_or_reuse_node_modules() {
 
 run_build() {
   local build_dir=$1
+  local layer_dir=$2
+  local build_cache
   local build_script
   local heroku_postbuild_script
+
+  build_cache=$(json_get_key "$build_dir/package.json" ".directories[\"heroku-buildcache\"]")
+  if [[ $build_cache ]] ; then
+    layer_dir="$layer_dir/$build_cache"
+    cat <<TOML > "$layer_dir.toml"
+cache = true
+build = false
+launch = false
+TOML
+    mkdir -p "${layer_dir}"
+    cp -r "$layer_dir" "$build_dir/$build_cache"
+    echo "$build_dir/$build_cache"
+    ls -lsa "$build_dir/$build_cache"
+  fi
 
   build_script=$(json_get_key "$build_dir/package.json" ".scripts.build")
   heroku_postbuild_script=$(json_get_key "$build_dir/package.json" ".scripts[\"heroku-postbuild\"]")
 
+  cd "$build_dir"
   if [[ $heroku_postbuild_script ]] ; then
     yarn heroku-postbuild
   elif [[ $build_script ]] ; then
     yarn build
+  fi
+  cd -
+
+  if [[ $build_cache && -d "$build_dir/$build_cache" && -n "$(ls -A "$build_dir/$build_cache")" ]] ; then
+    cp -r "$build_dir/$build_cache/." "$layer_dir"
   fi
 }
 
@@ -93,5 +119,4 @@ type = "web"
 command = "yarn start"
 TOML
   fi
-
 }

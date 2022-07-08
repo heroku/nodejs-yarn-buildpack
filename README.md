@@ -11,89 +11,21 @@ This buildpack builds on top of the existing [Node.js Engine Cloud Native Buildp
 
 ## Usage
 
-### Install pack
+This buildpack is meant to be used with `heroku/nodejs-engine` version `0.7.3`.
 
-Using `brew` (assuming development is done on MacOS), install `pack`.
-
-```sh
-brew tap buildpack/tap
-brew install pack
+```
+$ pack build --buildpack heroku/nodejs-engine@0.7.3 --buildpack fagiani/nodejs-yarn myapp
 ```
 
-If you're using Windows or Linux, follow instructions [here](https://buildpacks.io/docs/install-pack/).
+### Define a custom path for yarn (optional)
 
-### Clone the buildpack
+You can optionally create a `yarn.lock` file in the root directory with a line like this:
 
-Right now, we are prototyping with a local version of the buildpack. Clone it to your machine.
-
-```sh
-git clone git@github.com:heroku/nodejs-yarn-buildpack.git
+```
+# yarn_path:public/my-custom-path
 ```
 
-Clone the Heroku Node.js Engine Cloud Native Buildpack.
-
-```sh
-cd .. # change from nodejs-npm-buildpack directory
-git clone git@github.com:heroku/nodejs-engine-buildpack.git
-```
-
-### Build the image
-
-#### with buildpacks
-
-Using pack, you're ready to create an image from the buildpack and source code. You will need to add flags that point to the path of the source code (`--path`) and the paths of the buildpacks (`--buildpack`).
-
-```sh
-cd nodejs-yarn-buildpack
-pack build TEST_IMAGE_NAME --path ../TEST_REPO_PATH --buildpack ../nodejs-engine-buildpack --buildpack ../nodejs-yarn-buildpack
-```
-
-#### with a builder
-
-You can also create a `builder.toml` file that will have explicit directions when creating a buildpack. This is useful when there are multiple "detect" paths a build can take (ie. yarn vs. npm commands).
-
-In a directory outside of this buildpack, create a builder file:
-
-```sh
-cd ..
-mkdir heroku_nodejs_builder
-touch heroku_nodejs_builder/builder.toml
-```
-
-For local development, you'll want the file to look like this:
-
-```toml
-[[buildpacks]]
-  id = "heroku/nodejs-engine-buildpack"
-  uri = "../nodejs-engine-buildpack"
-
-[[buildpacks]]
-  id = "heroku/nodejs-yarn-buildpack"
-  uri = "../nodejs-yarn-buildpack"
-
-[[order]]
-  group = [
-    { id = "heroku/nodejs-engine-buildpack", version = "0.0.1" },
-    { id = "heroku/nodejs-yarn-buildpack", version = "0.0.1" }
-  ]
-
-[stack]
-  id = "heroku-18"
-  build-image = "heroku/pack:18"
-  run-image = "heroku/pack:18"
-```
-
-Create the builder with `pack`:
-
-```sh
-pack create-builder nodejs --builder-config ../heroku-nodejs-builder/builder.toml
-```
-
-Now you can use the builder image instead of chaining the buildpacks.
-
-```sh
-pack build TEST_IMAGE_NAME --path ../TEST_REPO_PATH --builder nodejs
-```
+Make sure you place the actual `package.json` and `yarn.lock` in that path
 
 ## Contributing
 
