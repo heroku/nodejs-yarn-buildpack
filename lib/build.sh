@@ -103,10 +103,6 @@ TOML
   fi
   cd -
 
-  echo "$build_dir/$build_cache"
-  ls -lsa "$build_dir/$build_cache"
-  ls -lsa "$build_dir/resources/assets/build"
-
   if [[ $build_cache && -d "$build_dir/$build_cache" && -n "$(ls -A "$build_dir/$build_cache")" ]] ; then
     cp -r "$build_dir/$build_cache/." "$layer_dir"
   fi
